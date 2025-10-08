@@ -1,10 +1,12 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import path from "path";
 import urlRoute from "./routes/url.js"
 import connectMongoDB from "./connect.js";
 import { handleRedirectToUrl } from "./controller/url.js";
 import userRoute from "./routes/user.js"
 import staticRouter from "./routes/staticRouter.js"
+import {restrictToUserOnly} from "./middleware/auth.middleware.js"
 
 
 
@@ -17,8 +19,9 @@ app.set('views', './view');   // optional: tells where your .ejs files are
 connectMongoDB();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
-app.use("/url", urlRoute);
+app.use("/url",restrictToUserOnly, urlRoute);
 app.use("/user", userRoute);
 app.use("/",staticRouter);
 

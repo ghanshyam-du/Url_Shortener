@@ -1,4 +1,9 @@
+import {v4 as uuidv4} from "uuid";
 import User from "../model/user.js"
+import setUser from "../service/auth.service.js"
+
+
+
 export async function handleUserSignup (req, res){
     const {name, email, password} = req.body;
     console.log("Signup data:", req.body);
@@ -24,8 +29,12 @@ export  async function handleUserSignin(req, res) {
     if(!user) return res.render("signin",{
         error: "Invalid User name and password!"
     })
+    const sessionId = uuidv4();
+    setUser(sessionId, user);
+    res.cookie("uid", sessionId);
 
-    return res.redirect("/");
+
+    return res.redirect("home");
 
     
 }
